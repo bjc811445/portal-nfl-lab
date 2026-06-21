@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>NFL · 信息卡片式介绍</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: #f5fafb;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+      color: #1a2b2e;
+      line-height: 1.6;
+      padding: 1.25rem 1rem 2.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    /* 主视觉 — 蓝绿渐层 + 点缀网格 */
+    .hero {
+      background: linear-gradient(145deg, #1c544f 0%, #2a7c74 40%, #368f84 100%);
+      border-radius: 2.5rem 2.5rem 1.25rem 1.25rem;
+      padding: 3rem 1.8rem 2.8rem;
+      margin: 0.5rem 0 2.2rem;
+      color: #e5f3f0;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 10px 25px -8px rgba(26, 80, 73, 0.25);
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+    }
+
+    .hero h1 {
+      font-size: 2.4rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+      margin-bottom: 0.75rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero p {
+      font-size: 1.1rem;
+      max-width: 520px;
+      opacity: 0.9;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero .tagline {
+      display: inline-block;
+      background: rgba(255,255,240,0.15);
+      backdrop-filter: blur(2px);
+      padding: 0.3rem 1rem;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      margin-top: 0.8rem;
+      letter-spacing: 0.3px;
+      border: 1px solid rgba(255,255,245,0.25);
+    }
+
+    /* 卡片网格 */
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 450;
+      margin: 2rem 0 1rem;
+      color: #1e534c;
+      letter-spacing: 0.3px;
+      border-left: 5px solid #2f9485;
+      padding-left: 0.8rem;
+    }
+
+    .grid-cards {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin: 1.2rem 0 2rem;
+    }
+
+    @media (min-width: 500px) {
+      .grid-cards {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 1.8rem;
+      padding: 1.6rem 1.4rem 1.8rem;
+      box-shadow: 0 4px 12px rgba(30, 80, 70, 0.06);
+      border: 1px solid #e0eeeb;
+      transition: box-shadow 0.2s, transform 0.15s;
+    }
+
+    .card:hover {
+      box-shadow: 0 8px 20px rgba(32, 96, 82, 0.08);
+      transform: translateY(-2px);
+    }
+
+    .card-icon {
+      background: #e0f2ef;
+      width: 48px;
+      height: 48px;
+      border-radius: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.6rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .card h3 {
+      font-size: 1.2rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: #1b4942;
+    }
+
+    .card p {
+      font-size: 0.95rem;
+      color: #2c4140;
+      opacity: 0.85;
+    }
+
+    /* 适合人群卡片（两列或单列） */
+    .audience-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin: 1rem 0 2rem;
+    }
+
+    .audience-tag {
+      background: #e3f3ef;
+      padding: 0.5rem 1.1rem;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 450;
+      color: #1c5a50;
+      border: 1px solid #c1ded7;
+      transition: background 0.15s;
+    }
+
+    .audience-tag:hover {
+      background: #cee9e2;
+    }
+
+    /* 自然链接段落 */
+    .link-paragraph {
+      background: #ffffff;
+      border-radius: 2rem;
+      padding: 1.6rem 1.8rem;
+      border: 1px solid #e0eeeb;
+      margin: 2rem 0 1.8rem;
+      box-shadow: 0 3px 10px rgba(30, 80, 70, 0.04);
+    }
+
+    .link-paragraph p {
+      margin-bottom: 0.8rem;
+      font-size: 1rem;
+    }
+
+    .link-paragraph a {
+      color: #1f7a6e;
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 2px solid #b3dbd3;
+      transition: border-color 0.2s;
+    }
+
+    .link-paragraph a:hover {
+      border-bottom-color: #1f7a6e;
+    }
+
+    .faq-mini {
+      margin-top: 2rem;
+    }
+
+    .faq-item {
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #dcebe7;
+    }
+
+    .faq-item:last-child {
+      border-bottom: none;
+    }
+
+    .faq-q {
+      font-weight: 500;
+      color: #1f5a50;
+      margin-bottom: 0.15rem;
+    }
+
+    .faq-a {
+      font-size: 0.92rem;
+      color: #3d5551;
+    }
+
+    .footer-note {
+      margin-top: 3rem;
+      font-size: 0.8rem;
+      color: #587874;
+      text-align: center;
+      border-top: 1px solid #d0e3df;
+      padding-top: 1.5rem;
+    }
+
+    .footer-note a {
+      color: #1f7a6e;
+      text-decoration: none;
+      border-bottom: 1px dotted #b3d3cb;
+    }
+
+    /* 移动端微调 */
+    @media (max-width: 480px) {
+      .hero h1 {
+        font-size: 1.9rem;
+      }
+      .hero {
+        padding: 2rem 1.2rem 2.2rem;
+      }
+      .section-title {
+        font-size: 1.35rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <!-- hero 主视觉 -->
+  <div class="hero">
+    <h1>信息场域 · nfl</h1>
+    <p>从赛事数据到深度内容，围绕橄榄球生态构建一种更清晰的信息浏览方式。</p>
+    <span class="tagline">▸ 卡片网格 · 克制叙事</span>
+  </div>
+
+  <!-- 用途卡片 (grid) -->
+  <h2 class="section-title">用途侧写</h2>
+  <div class="grid-cards">
+    <div class="card">
+      <div class="card-icon">📋</div>
+      <h3>实时赛况与摘要</h3>
+      <p>浓缩每周比赛关键事件，以结构化的卡片呈现比分、推进路线与转折点，减少信息过载。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🗂️</div>
+      <h3>球队与球员档案</h3>
+      <p>按球队、分区、位置组织资料页，数据与叙事结合，便于深度浏览或快速查阅。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">📰</div>
+      <h3>赛季专题 & 分析</h3>
+      <p>围绕选秀、交易、战术演变等话题，提供相对克制的专栏式内容，不追逐短期流量。</p>
+    </div>
+    <div class="card">
+      <div class="card-icon">🧩</div>
+      <h3>自定义信息流</h3>
+      <p>用户可根据兴趣筛选球队、位置、话题维度，构造属于自己的橄榄球信息面板。</p>
+    </div>
+  </div>
+
+  <!-- 适合人群（标签） -->
+  <h2 class="section-title">适合什么样的人</h2>
+  <div class="audience-list">
+    <span class="audience-tag">长期关注NFL的球迷</span>
+    <span class="audience-tag"> fantasy 经理人</span>
+    <span class="audience-tag"> 数据与战术爱好者</span>
+    <span class="audience-tag"> 体育内容编辑</span>
+    <span class="audience-tag"> 新晋入门观众</span>
+    <span class="audience-tag"> 多赛事对比读者</span>
+  </div>
+
+  <!-- 自然链接段落 -->
+  <div class="link-paragraph">
+    <p>这个站点最初生长于一个小的想法：当信息被切割成主题卡片而非长列表时，浏览 NFL 相关内容可以更安静、更聚焦。无论你是在赛季中跟进每轮攻防，还是在休赛期翻阅历史选秀资料，<a href="https://portal-nfl.com">nfl</a> 这个信息入口提供了一种有分寸的聚合体验。</p>
+    <p>页面布局刻意避免高密度推送，卡片与留白让阅读节奏由浏览者自己控制。如果你也常觉得体育资讯过于喧嚣，或许可以试试这种更接近杂志式翻阅的呈现。</p>
+  </div>
+
+  <!-- 简短的FAQ摘要 (不总是相同) -->
+  <div class="faq-mini">
+    <h3 style="font-weight:450; color:#1e534c; margin-bottom:0.5rem;">常见疑问摘要</h3>
+    <div class="faq-item">
+      <div class="faq-q">数据更新频率？</div>
+      <div class="faq-a">赛季期间，核心比赛数据通常在赛后数小时内完成结构化更新；深度分析文章每周1-3篇。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">是否提供API或导出？</div>
+      <div class="faq-a">目前没有公开API。部分页面支持复制卡片文本或截图，未来可能提供简单导出。</div>
+    </div>
+    <div class="faq-item">
+      <div class="faq-q">移动端浏览体验如何？</div>
+      <div class="faq-a">卡片网格针对手机屏幕做了断点适配，单列时阅读面积舒适，没有侧边栏干扰。</div>
+    </div>
+  </div>
+
+  <!-- 底部 / 再次自然提及链接 -->
+  <div class="footer-note">
+    关于这个信息框架的更多说明，可以透过 <a href="https://portal-nfl.com">nfl</a> 直接了解。页面设计采用蓝绿点缀与网格卡片，适合安静阅读。
+  </div>
+</div>
+</body>
+</html>
